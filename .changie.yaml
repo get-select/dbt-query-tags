@@ -5,9 +5,9 @@ unreleasedDir: unreleased
 headerPath: header.tpl.md
 changelogPath: CHANGELOG.md
 versionExt: md
-versionFormat: '## dbt-snowflake-query-tags {{.Version}} - {{.Time.Format "January 02, 2006"}}'
+versionFormat: '## dbt-query-tags {{.Version}} - {{.Time.Format "January 02, 2006"}}'
 kindFormat: '### {{.Kind}}'
-changeFormat: '- {{.Body}} ([#{{.Custom.PR}}](https://github.com/get-select/dbt-snowflake-query-tags/pull/{{.Custom.PR}}))'
+changeFormat: '- {{.Body}} ([#{{.Custom.PR}}](https://github.com/get-select/dbt-query-tags/pull/{{.Custom.PR}}))'
 kinds:
 - label: Breaking Changes
 - label: Features
