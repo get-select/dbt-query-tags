@@ -243,3 +243,7 @@ Once changie is installed and your PR is created, simply run these changie comma
 3. `changie merge`
 
 Next, update `dbt_project.yaml` with the new version number.
+
+## History
+
+This package was originally published as [dbt-snowflake-query-tags](https://github.com/get-select/dbt-snowflake-query-tags). It was renamed to `dbt-query-tags` to support multiple platforms.
