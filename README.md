@@ -1,4 +1,4 @@
-# dbt-snowflake-query-tags
+# dbt-query-tags
 
 From the [SELECT](https://select.dev) team, a dbt package to automatically tag dbt-issued queries with informative metadata. This package uses both query comments and query tagging.
 
@@ -6,7 +6,7 @@ An example query comment contains:
 
 ```json
 {
-    "dbt_snowflake_query_tags_version": "2.3.2",
+    "dbt_query_tags_version": "3.0.0",
     "app": "dbt",
     "dbt_version": "1.4.0",
     "project_name": "my_project",
@@ -45,7 +45,7 @@ Query tags are used solely for attaching the `is_incremental` flag, as this isn'
 
 ```json
 {
-    "dbt_snowflake_query_tags_version": "2.3.2",
+    "dbt_query_tags_version": "3.0.0",
     "app": "dbt",
     "is_incremental": true
 }
@@ -57,8 +57,8 @@ Query tags are used solely for attaching the `is_incremental` flag, as this isn'
 
 ```yaml
 packages:
-  - package: get-select/dbt_snowflake_query_tags
-    version: [">=2.0.0", "<3.0.0"]
+  - package: get-select/dbt_query_tags
+    version: [">=3.0.0", "<4.0.0"]
 ```
 
 2. Adding the query tags
@@ -67,11 +67,11 @@ Option 1: If running dbt < 1.2, create a folder named `macros` in your dbt proje
 
 ```sql
 {% macro set_query_tag() -%}
-{% do return(dbt_snowflake_query_tags.set_query_tag()) %}
+{% do return(dbt_query_tags.set_query_tag()) %}
 {% endmacro %}
 
 {% macro unset_query_tag(original_query_tag) -%}
-{% do return(dbt_snowflake_query_tags.unset_query_tag(original_query_tag)) %}
+{% do return(dbt_query_tags.unset_query_tag(original_query_tag)) %}
 {% endmacro %}
 ```
 
@@ -82,7 +82,7 @@ dispatch:
   - macro_namespace: dbt
     search_order:
       - <YOUR_PROJECT_NAME>
-      - dbt_snowflake_query_tags
+      - dbt_query_tags
       - dbt
 ```
 
@@ -90,7 +90,7 @@ dispatch:
 
 ```yaml
 query-comment:
-  comment: '{{ dbt_snowflake_query_tags.get_query_comment(node) }}'
+  comment: '{{ dbt_query_tags.get_query_comment(node) }}'
   append: true # Snowflake removes prefixed comments.
 ```
 
@@ -106,11 +106,11 @@ Both [meta](https://docs.getdbt.com/reference/resource-configs/meta) and [tag](h
 
 #### 'extra' kwarg
 
-To add arbitrary keys and values to the comments, you can use the `extra` kwarg when calling `dbt_snowflake_query_tags.get_query_comment`. For example, to add a `run_started_at` key and value to the comment, we can do:
+To add arbitrary keys and values to the comments, you can use the `extra` kwarg when calling `dbt_query_tags.get_query_comment`. For example, to add a `run_started_at` key and value to the comment, we can do:
 
 ```yaml
 query-comment:
-  comment: '{{ dbt_snowflake_query_tags.get_query_comment(node, extra={"run_started_at": builtins.run_started_at | string }) }}'
+  comment: '{{ dbt_query_tags.get_query_comment(node, extra={"run_started_at": builtins.run_started_at | string }) }}'
   append: true # Snowflake removes prefixed comments.
 ```
 
@@ -121,7 +121,7 @@ Here's an example of how you can add environment variables into the query commen
 ```sql
 query-comment:
   comment: >
-    {{ dbt_snowflake_query_tags.get_query_comment(
+    {{ dbt_query_tags.get_query_comment(
       node,
       extra={
         'CI_PIPELINE_ID': env_var('CI_PIPELINE_ID'),
@@ -161,7 +161,7 @@ select ...
 
 Results in the following query tag. The additional information is added by this package.
 ```
-'{"team": "data", "app": "dbt", "dbt_snowflake_query_tags_version": "2.3.2", "is_incremental": true}'
+'{"team": "data", "app": "dbt", "dbt_query_tags_version": "3.0.0", "is_incremental": true}'
 ```
 
 Note that using a non-mapping type in the `query_tag` config will result in a warning, and the config being ignored.
@@ -177,7 +177,7 @@ select ...
 
 Warning:
 ```
-dbt-snowflake-query-tags warning: the query_tag config value of 'data team' is not a mapping type, so is being ignored. If you'd like to add additional query tag information, use a mapping type instead, or remove it to avoid this message.
+dbt-query-tags warning: the query_tag config value of 'data team' is not a mapping type, so is being ignored. If you'd like to add additional query tag information, use a mapping type instead, or remove it to avoid this message.
 ```
 
 #### Profiles.yml
@@ -209,7 +209,7 @@ dbt_project.yml:
 
 Results in a final query tag of
 ```
-'{"team": "data", "job_name": "daily", "app": "dbt", "dbt_snowflake_query_tags_version": "2.3.2", "is_incremental": true}'
+'{"team": "data", "job_name": "daily", "app": "dbt", "dbt_query_tags_version": "3.0.0", "is_incremental": true}'
 ```
 
 #### 'extra' kwarg
@@ -218,7 +218,7 @@ Like the query comment macro, the query tag macro also supports an 'extra' kwarg
 
 ```
 {% macro set_query_tag() -%}
-    {% do return(dbt_snowflake_query_tags.set_query_tag(
+    {% do return(dbt_query_tags.set_query_tag(
         extra={
             'custom_config_property': config.get('custom_config_property'),
         }
@@ -226,7 +226,7 @@ Like the query comment macro, the query tag macro also supports an 'extra' kwarg
 {% endmacro %}
 
 {% macro unset_query_tag(original_query_tag) -%}
-    {% do return(dbt_snowflake_query_tags.unset_query_tag(original_query_tag)) %}
+    {% do return(dbt_query_tags.unset_query_tag(original_query_tag)) %}
 {% endmacro %}
 ```
 
@@ -243,3 +243,7 @@ Once changie is installed and your PR is created, simply run these changie comma
 3. `changie merge`
 
 Next, update `dbt_project.yaml` with the new version number.
+
+## History
+
+This package was originally published as [dbt-snowflake-query-tags](https://github.com/get-select/dbt-snowflake-query-tags). It was renamed to `dbt-query-tags` to support multiple platforms.

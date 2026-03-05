@@ -1,5 +1,5 @@
 {% macro set_query_tag(extra = {}) -%}
-    {{ return(adapter.dispatch('set_query_tag', 'dbt_snowflake_query_tags')(extra=extra)) }}
+    {{ return(adapter.dispatch('set_query_tag', 'dbt_query_tags')(extra=extra)) }}
 {%- endmacro %}
 
 {% macro default__set_query_tag(extra = {}) -%}
@@ -31,7 +31,7 @@
     {% endif %}
 
     {% if query_tag is not mapping %}
-    {% do log("dbt-snowflake-query-tags warning: the query_tag config value of '{}' is not a mapping type, so is being ignored. If you'd like to add additional query tag information, use a mapping type instead, or remove it to avoid this message.".format(query_tag), True) %}
+    {% do log("dbt-query-tags warning: the query_tag config value of '{}' is not a mapping type, so is being ignored. If you'd like to add additional query tag information, use a mapping type instead, or remove it to avoid this message.".format(query_tag), True) %}
     {% set query_tag = {} %} {# If the user has set the query tag config as a non mapping type, start fresh #}
     {% endif %}
 
@@ -41,7 +41,7 @@
 
     {%- do query_tag.update(
         app='dbt',
-        dbt_snowflake_query_tags_version='2.5.0',
+        dbt_query_tags_version='3.0.0',
     ) -%}
 
     {% if thread_id %}
@@ -65,7 +65,7 @@
 {% endmacro %}
 
 {% macro unset_query_tag(original_query_tag) -%}
-    {{ return(adapter.dispatch('unset_query_tag', 'dbt_snowflake_query_tags')(original_query_tag)) }}
+    {{ return(adapter.dispatch('unset_query_tag', 'dbt_query_tags')(original_query_tag)) }}
 {%- endmacro %}
 
 {% macro default__unset_query_tag(original_query_tag) -%}
