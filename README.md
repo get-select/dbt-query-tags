@@ -6,7 +6,7 @@ An example query comment contains:
 
 ```json
 {
-    "dbt_query_tags_version": "3.0.0",
+    "dbt_query_tags_version": "3.0.1",
     "app": "dbt",
     "dbt_version": "1.4.0",
     "project_name": "my_project",
@@ -45,7 +45,7 @@ Query tags are used solely for attaching the `is_incremental` flag, as this isn'
 
 ```json
 {
-    "dbt_query_tags_version": "3.0.0",
+    "dbt_query_tags_version": "3.0.1",
     "app": "dbt",
     "is_incremental": true
 }
@@ -161,7 +161,7 @@ select ...
 
 Results in the following query tag. The additional information is added by this package.
 ```
-'{"team": "data", "app": "dbt", "dbt_query_tags_version": "3.0.0", "is_incremental": true}'
+'{"team": "data", "app": "dbt", "dbt_query_tags_version": "3.0.1", "is_incremental": true}'
 ```
 
 Note that using a non-mapping type in the `query_tag` config will result in a warning, and the config being ignored.
@@ -209,7 +209,7 @@ dbt_project.yml:
 
 Results in a final query tag of
 ```
-'{"team": "data", "job_name": "daily", "app": "dbt", "dbt_query_tags_version": "3.0.0", "is_incremental": true}'
+'{"team": "data", "job_name": "daily", "app": "dbt", "dbt_query_tags_version": "3.0.1", "is_incremental": true}'
 ```
 
 #### 'extra' kwarg
@@ -239,10 +239,14 @@ Follow the steps to [install changie](https://changie.dev/guide/installation/) f
 
 Once changie is installed and your PR is created, simply run these changie commands:
 1. `changie new`: changie will walk you through the process of creating a changelog entry.
-2. `changeie batch x.x.x` where x.x.x is the new version needed.  You can chech the `.changes` folder to know the next version number.
+2. `changie batch x.x.x` where x.x.x is the new version needed.  You can chech the `.changes` folder to know the next version number.
 3. `changie merge`
 
-Next, update `dbt_project.yaml` with the new version number.
+Next, update the version number in these places:
+- `dbt_project.yml`
+- `macros/query_comment.sql`
+- `macros/query_tags.sql`
+- The example output strings in `README.md`
 
 ## History
 
