@@ -1,13 +1,13 @@
-name: CI test package
+name: Test package
 
 on:
   workflow_dispatch:
-  # all PRs, important to note that `pull_request_target` workflows
-  # will run in the context of the target branch of a PR
   pull_request_target:
+  push:
+    branches:
+      - main
 
 env:
-  # These are configured in GitHub secrets
   DBT_PROFILES_DIR: /home/runner/work/${{ github.event.repository.name }}/${{ github.event.repository.name }}/integration_tests
   GITHUB_SHA_OVERRIDE: ${{ github.event.pull_request.head.sha }} # We need the commit hash of the pull request branch's head, the GITHUB_SHA env var is always the base branch in a pull_request_target trigger
   SNOWFLAKE_ACCOUNT: ${{ secrets.SNOWFLAKE_TEST_ACCOUNT }}
@@ -18,18 +18,17 @@ env:
   SNOWFLAKE_WAREHOUSE: ${{ secrets.SNOWFLAKE_TEST_WAREHOUSE }}
   SNOWFLAKE_SCHEMA: "integration_tests_snowflake_${{ github.run_number }}"
 
-
 jobs:
   integration-snowflake:
     runs-on: ubuntu-latest
     environment:
-      name: Approve Integration Tests
+      name: ${{ github.event_name == 'pull_request_target' && 'Approve Integration Tests' || '' }}
 
     steps:
       - name: Checkout
         uses: actions/checkout@v2
         with:
-          ref: ${{ github.event.pull_request.head.sha }} # Check out the code of the PR
+          ref: ${{ github.event.pull_request.head.sha }}
 
       - name: Install tox
         run: python3 -m pip install tox
