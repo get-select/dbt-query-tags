@@ -61,21 +61,11 @@ packages:
     version: [">=3.0.0", "<4.0.0"]
 ```
 
-2. Adding the query tags
+2. Add the query tags. The setup differs by adapter:
 
-Option 1: If running dbt < 1.2, create a folder named `macros` in your dbt project's top level directory (if it doesn't exist). Inside, make a new file called `query_tags.sql` with the following content:
+### Snowflake
 
-```sql
-{% macro set_query_tag() -%}
-{% do return(dbt_query_tags.set_query_tag()) %}
-{% endmacro %}
-
-{% macro unset_query_tag(original_query_tag) -%}
-{% do return(dbt_query_tags.unset_query_tag(original_query_tag)) %}
-{% endmacro %}
-```
-
-Option 2: If running dbt >= 1.2, simply configure the dispatch search order in `dbt_project.yml`.
+Configure the dispatch search order in `dbt_project.yml`. This lets the package override Snowflake's built-in `set_query_tag` hook, which is called automatically by the adapter for every model.
 
 ```yaml
 dispatch:
@@ -86,12 +76,23 @@ dispatch:
       - dbt
 ```
 
+### Databricks
+
+dbt-databricks does not have a built-in `set_query_tag` hook, so you need to add per-model hooks to your `dbt_project.yml`:
+
+```yaml
+models:
+  <YOUR_PROJECT_NAME>:
+    +pre-hook: "{{ dbt_query_tags.set_query_tag() }}"
+    +post-hook: "{{ dbt_query_tags.unset_query_tag(query_tag) }}"
+```
+
 3. To configure the query comments, add the following config to `dbt_project.yml`.
 
 ```yaml
 query-comment:
   comment: '{{ dbt_query_tags.get_query_comment(node) }}'
-  append: true # Snowflake removes prefixed comments.
+  append: true # Note: append is only necessary on Snowflake, which strips prefixed comments. It is harmless on other adapters.
 ```
 
 That's it! All dbt-issued queries will now be tagged.
@@ -134,6 +135,8 @@ query-comment:
 ```
 
 ### Query tags
+
+> **Note:** The query tag extension options below (model config, profiles.yml, environment variables, extra kwarg) are Snowflake-only. On Databricks, the adapter already auto-appends rich per-query tags (`@@dbt_model_name`, `@@dbt_core_version`, `@@dbt_databricks_version`, `@@dbt_materialized`), and the metadata tag set by this package contains `app`, `dbt_query_tags_version`, `thread_id`, and `is_incremental`.
 
 To extend the information added in the query tags, there are a few options:
 
@@ -210,24 +213,6 @@ dbt_project.yml:
 Results in a final query tag of
 ```
 '{"team": "data", "job_name": "daily", "app": "dbt", "dbt_query_tags_version": "3.0.1", "is_incremental": true}'
-```
-
-#### 'extra' kwarg
-
-Like the query comment macro, the query tag macro also supports an 'extra' kwarg. To make use of it, you'll need to configure this package following the dbt < 1.2 instructions. Then you can add any logic you like for additional query tag metadata in `query_tags.sql`.
-
-```
-{% macro set_query_tag() -%}
-    {% do return(dbt_query_tags.set_query_tag(
-        extra={
-            'custom_config_property': config.get('custom_config_property'),
-        }
-    )) %}
-{% endmacro %}
-
-{% macro unset_query_tag(original_query_tag) -%}
-    {% do return(dbt_query_tags.unset_query_tag(original_query_tag)) %}
-{% endmacro %}
 ```
 
 ## Contributing

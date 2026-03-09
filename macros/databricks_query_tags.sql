@@ -20,12 +20,11 @@
 
     {% set query_tag_json = tojson(query_tag) %}
     {{ log("Setting query_tag metadata to '" ~ query_tag_json ~ "'.") }}
-    {% do run_query("SET QUERY_TAGS['metadata'] = '{}'".format(query_tag_json)) %}
-    {{ return(none) }}
-{% endmacro %}
+    {{ return("SET QUERY_TAGS['metadata'] = '{}'".format(query_tag_json)) }}
+{%- endmacro %}
 
 {% macro databricks__unset_query_tag(original_query_tag) -%}
     {# original_query_tag is unused — no save/restore needed since we only touch the named 'metadata' key #}
     {{ log("Unsetting query_tag metadata.") }}
-    {% do run_query("SET QUERY_TAGS['metadata'] = UNSET") %}
-{% endmacro %}
+    {{ return("SET QUERY_TAGS['metadata'] = UNSET") }}
+{%- endmacro %}
