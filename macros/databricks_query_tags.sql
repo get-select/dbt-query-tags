@@ -6,7 +6,7 @@
 
     {% set query_tag = {
         'app': 'dbt',
-        'dbt_query_tags_version': '3.0.1',
+        'dbt_query_tags_version': '3.1.0',
     } %}
 
     {% if thread_id %}
