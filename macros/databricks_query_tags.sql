@@ -1,9 +1,4 @@
 {% macro databricks__set_query_tag(extra = {}) -%}
-    {# extra and other Snowflake-specific extension points (model query_tag config,
-       profiles.yml session tag, env_vars_to_query_tag_list) are intentionally not
-       supported on Databricks — the adapter already provides rich tagging via its
-       auto-appended @@dbt_* tags. #}
-
     {% set query_tag = {
         'app': 'dbt',
         'dbt_query_tags_version': '3.1.0',
