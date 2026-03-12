@@ -233,6 +233,50 @@ Next, update the version number in these places:
 - `macros/query_tags.sql`
 - The example output strings in `README.md`
 
-## History
+## Migrating from dbt-snowflake-query-tags
 
-This package was originally published as [dbt-snowflake-query-tags](https://github.com/get-select/dbt-snowflake-query-tags). It was renamed to `dbt-query-tags` to support multiple platforms.
+This package was originally published as [dbt-snowflake-query-tags](https://github.com/get-select/dbt-snowflake-query-tags) and renamed to `dbt-query-tags` to support multiple platforms. If you were using the old package, make the following updates:
+
+In `packages.yml`:
+
+```yaml
+# Before
+packages:
+  - package: get-select/dbt_snowflake_query_tags
+    version: [">=2.0.0", "<3.0.0"]
+
+# After
+packages:
+  - package: get-select/dbt_query_tags
+    version: [">=3.0.0", "<4.0.0"]
+```
+
+In `dbt_project.yml`:
+
+```yaml
+# Before
+dispatch:
+  - macro_namespace: dbt
+    search_order:
+      - <YOUR_PROJECT_NAME>
+      - dbt_snowflake_query_tags
+      - dbt
+
+query-comment:
+  comment: '{{ dbt_snowflake_query_tags.get_query_comment(node) }}'
+  append: true
+
+# After
+dispatch:
+  - macro_namespace: dbt
+    search_order:
+      - <YOUR_PROJECT_NAME>
+      - dbt_query_tags
+      - dbt
+
+query-comment:
+  comment: '{{ dbt_query_tags.get_query_comment(node) }}'
+  append: true
+```
+
+If you're using dbt Cloud or a similar hosted service, no further action is needed after making these changes. For local development, run `dbt deps` to install the new package.
