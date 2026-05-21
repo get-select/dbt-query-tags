@@ -2,7 +2,7 @@
     {%- set comment_dict = extra -%}
     {%- do comment_dict.update(
         app='dbt',
-        dbt_query_tags_version='3.1.0',
+        dbt_query_tags_version='3.2.0',
         dbt_version=dbt_version,
         project_name=project_name,
         target_name=target.name,
@@ -13,6 +13,10 @@
         full_refresh=flags.FULL_REFRESH,
         which=flags.WHICH,
     ) -%}
+
+    {%- if thread_id is defined and thread_id -%}
+        {%- do comment_dict.update(thread_id=thread_id) -%}
+    {%- endif -%}
 
     {%- if node is not none -%}
         {%- do comment_dict.update(

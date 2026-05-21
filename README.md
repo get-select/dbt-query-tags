@@ -6,7 +6,7 @@ An example query comment contains:
 
 ```json
 {
-    "dbt_query_tags_version": "3.1.0",
+    "dbt_query_tags_version": "3.2.0",
     "app": "dbt",
     "dbt_version": "1.4.0",
     "project_name": "my_project",
@@ -45,7 +45,7 @@ Query tags are used solely for attaching the `is_incremental` flag, as this isn'
 
 ```json
 {
-    "dbt_query_tags_version": "3.1.0",
+    "dbt_query_tags_version": "3.2.0",
     "app": "dbt",
     "is_incremental": true
 }
@@ -86,6 +86,14 @@ models:
     +pre-hook: "{{ dbt_query_tags.set_query_tag() }}"
     +post-hook: "{{ dbt_query_tags.unset_query_tag(query_tag) }}"
 ```
+
+### BigQuery
+
+No extra setup is required for BigQuery beyond the query comment in step 3. All metadata is embedded directly in the SQL comment, including `thread_id` (which Snowflake/Databricks attach via query tags). The comment travels with every query and is queryable from `INFORMATION_SCHEMA.JOBS_BY_PROJECT.query`, so you can group/filter jobs by any field with `REGEXP_CONTAINS` or `LIKE`.
+
+The runtime `is_incremental` flag is not included on BigQuery because dbt's query-comment context does not expose `adapter`, `execute`, or `this`. Filter on `materialized=incremental` and `full_refresh=false` as a proxy.
+
+If you want to also attach the JSON comment as sanitized BigQuery [job labels](https://cloud.google.com/bigquery/docs/labels-intro) (for filtering in the BQ console or in billing exports), set `job-label: true` in the query-comment config below. Each top-level JSON key becomes a label, [sanitized](https://cloud.google.com/bigquery/docs/labels-intro#requirements) to lowercase `[a-z0-9_-]` and truncated to 63 chars.
 
 3. To configure the query comments, add the following config to `dbt_project.yml`.
 
@@ -136,7 +144,7 @@ query-comment:
 
 ### Query tags
 
-> **Note:** The query tag extension options below (model config, profiles.yml, environment variables, extra kwarg) are Snowflake-only. On Databricks, the adapter already auto-appends rich per-query tags (`@@dbt_model_name`, `@@dbt_core_version`, `@@dbt_databricks_version`, `@@dbt_materialized`), and the metadata tag set by this package contains `app`, `dbt_query_tags_version`, `thread_id`, and `is_incremental`.
+> **Note:** The query tag extension options below (model config, profiles.yml, environment variables, extra kwarg) are Snowflake-only. On Databricks, the adapter already auto-appends rich per-query tags (`@@dbt_model_name`, `@@dbt_core_version`, `@@dbt_databricks_version`, `@@dbt_materialized`), and the metadata tag set by this package contains `app`, `dbt_query_tags_version`, `thread_id`, and `is_incremental`. On BigQuery there is no separate query-tag mechanism — the same metadata (including `thread_id` and `is_incremental`) is included in the query comment instead.
 
 To extend the information added in the query tags, there are a few options:
 
@@ -164,7 +172,7 @@ select ...
 
 Results in the following query tag. The additional information is added by this package.
 ```
-'{"team": "data", "app": "dbt", "dbt_query_tags_version": "3.1.0", "is_incremental": true}'
+'{"team": "data", "app": "dbt", "dbt_query_tags_version": "3.2.0", "is_incremental": true}'
 ```
 
 Note that using a non-mapping type in the `query_tag` config will result in a warning, and the config being ignored.
@@ -212,7 +220,7 @@ dbt_project.yml:
 
 Results in a final query tag of
 ```
-'{"team": "data", "job_name": "daily", "app": "dbt", "dbt_query_tags_version": "3.1.0", "is_incremental": true}'
+'{"team": "data", "job_name": "daily", "app": "dbt", "dbt_query_tags_version": "3.2.0", "is_incremental": true}'
 ```
 
 ## Contributing
