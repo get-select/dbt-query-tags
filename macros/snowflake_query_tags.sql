@@ -37,7 +37,7 @@
 
     {%- do query_tag.update(
         app='dbt',
-        dbt_query_tags_version='3.2.0',
+        dbt_query_tags_version='3.2.1',
     ) -%}
 
     {% if thread_id %}
