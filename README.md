@@ -93,8 +93,6 @@ No extra setup is required for BigQuery beyond the query comment in step 3. All 
 
 The runtime `is_incremental` flag is not included on BigQuery because dbt's query-comment context does not expose `adapter`, `execute`, or `this`. Filter on `materialized=incremental` and `full_refresh=false` as a proxy.
 
-If you want to also attach the JSON comment as sanitized BigQuery [job labels](https://cloud.google.com/bigquery/docs/labels-intro) (for filtering in the BQ console or in billing exports), set `job-label: true` in the query-comment config below. Each top-level JSON key becomes a label, [sanitized](https://cloud.google.com/bigquery/docs/labels-intro#requirements) to lowercase `[a-z0-9_-]` and truncated to 63 chars.
-
 3. To configure the query comments, add the following config to `dbt_project.yml`.
 
 ```yaml
