@@ -6,7 +6,7 @@ An example query comment contains:
 
 ```json
 {
-    "dbt_query_tags_version": "3.2.0",
+    "dbt_query_tags_version": "3.2.1",
     "app": "dbt",
     "dbt_version": "1.4.0",
     "project_name": "my_project",
@@ -45,7 +45,7 @@ Query tags are used solely for attaching the `is_incremental` flag, as this isn'
 
 ```json
 {
-    "dbt_query_tags_version": "3.2.0",
+    "dbt_query_tags_version": "3.2.1",
     "app": "dbt",
     "is_incremental": true
 }
@@ -168,7 +168,7 @@ select ...
 
 Results in the following query tag. The additional information is added by this package.
 ```
-'{"team": "data", "app": "dbt", "dbt_query_tags_version": "3.2.0", "is_incremental": true}'
+'{"team": "data", "app": "dbt", "dbt_query_tags_version": "3.2.1", "is_incremental": true}'
 ```
 
 Note that using a non-mapping type in the `query_tag` config will result in a warning, and the config being ignored.
@@ -216,7 +216,7 @@ dbt_project.yml:
 
 Results in a final query tag of
 ```
-'{"team": "data", "job_name": "daily", "app": "dbt", "dbt_query_tags_version": "3.2.0", "is_incremental": true}'
+'{"team": "data", "job_name": "daily", "app": "dbt", "dbt_query_tags_version": "3.2.1", "is_incremental": true}'
 ```
 
 ## Contributing
