@@ -144,7 +144,7 @@ query-comment:
 
 ### Query tags
 
-> **Note:** The query tag extension options below (model config, profiles.yml, environment variables, extra kwarg) are Snowflake-only. On Databricks, the adapter already auto-appends rich per-query tags (`@@dbt_model_name`, `@@dbt_core_version`, `@@dbt_databricks_version`, `@@dbt_materialized`), and the metadata tag set by this package contains `app`, `dbt_query_tags_version`, `thread_id`, and `is_incremental`. On BigQuery there is no separate query-tag mechanism — the same metadata (including `thread_id` and `is_incremental`) is included in the query comment instead.
+> **Note:** The query tag extension options below (model config, profiles.yml, environment variables, extra kwarg) are Snowflake-only. On Databricks, the adapter already auto-appends rich per-query tags (`@@dbt_model_name`, `@@dbt_core_version`, `@@dbt_databricks_version`, `@@dbt_materialized`), and the metadata tag set by this package contains `app`, `dbt_query_tags_version`, `thread_id`, and `is_incremental`. On BigQuery there is no separate query-tag mechanism — `thread_id` is included in the query comment instead, but `is_incremental` is not available (see the BigQuery section above for the workaround).
 
 To extend the information added in the query tags, there are a few options:
 
