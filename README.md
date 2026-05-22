@@ -6,7 +6,7 @@ An example query comment contains:
 
 ```json
 {
-    "dbt_query_tags_version": "3.1.0",
+    "dbt_query_tags_version": "3.2.0",
     "app": "dbt",
     "dbt_version": "1.4.0",
     "project_name": "my_project",
@@ -45,7 +45,7 @@ Query tags are used solely for attaching the `is_incremental` flag, as this isn'
 
 ```json
 {
-    "dbt_query_tags_version": "3.1.0",
+    "dbt_query_tags_version": "3.2.0",
     "app": "dbt",
     "is_incremental": true
 }
@@ -86,6 +86,10 @@ models:
     +pre-hook: "{{ dbt_query_tags.set_query_tag() }}"
     +post-hook: "{{ dbt_query_tags.unset_query_tag(query_tag) }}"
 ```
+
+### BigQuery
+
+No extra setup is required for BigQuery beyond the query comment in step 3.
 
 3. To configure the query comments, add the following config to `dbt_project.yml`.
 
@@ -136,7 +140,7 @@ query-comment:
 
 ### Query tags
 
-> **Note:** The query tag extension options below (model config, profiles.yml, environment variables, extra kwarg) are Snowflake-only. On Databricks, the adapter already auto-appends rich per-query tags (`@@dbt_model_name`, `@@dbt_core_version`, `@@dbt_databricks_version`, `@@dbt_materialized`), and the metadata tag set by this package contains `app`, `dbt_query_tags_version`, `thread_id`, and `is_incremental`.
+> **Note:** The query tag extension options below (model config, profiles.yml, environment variables, extra kwarg) are Snowflake-only. On Databricks, the adapter already auto-appends rich per-query tags (`@@dbt_model_name`, `@@dbt_core_version`, `@@dbt_databricks_version`, `@@dbt_materialized`), and the metadata tag set by this package contains `app`, `dbt_query_tags_version`, `thread_id`, and `is_incremental`. BigQuery has no separate query-tag mechanism.
 
 To extend the information added in the query tags, there are a few options:
 
@@ -164,7 +168,7 @@ select ...
 
 Results in the following query tag. The additional information is added by this package.
 ```
-'{"team": "data", "app": "dbt", "dbt_query_tags_version": "3.1.0", "is_incremental": true}'
+'{"team": "data", "app": "dbt", "dbt_query_tags_version": "3.2.0", "is_incremental": true}'
 ```
 
 Note that using a non-mapping type in the `query_tag` config will result in a warning, and the config being ignored.
@@ -212,7 +216,7 @@ dbt_project.yml:
 
 Results in a final query tag of
 ```
-'{"team": "data", "job_name": "daily", "app": "dbt", "dbt_query_tags_version": "3.1.0", "is_incremental": true}'
+'{"team": "data", "job_name": "daily", "app": "dbt", "dbt_query_tags_version": "3.2.0", "is_incremental": true}'
 ```
 
 ## Contributing
