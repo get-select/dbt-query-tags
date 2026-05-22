@@ -89,9 +89,7 @@ models:
 
 ### BigQuery
 
-No extra setup is required for BigQuery beyond the query comment in step 3. All metadata is embedded directly in the SQL comment, including `thread_id` (which Snowflake/Databricks attach via query tags). The comment travels with every query and is queryable from `INFORMATION_SCHEMA.JOBS_BY_PROJECT.query`, so you can group/filter jobs by any field with `REGEXP_CONTAINS` or `LIKE`.
-
-The runtime `is_incremental` flag is not included on BigQuery because dbt's query-comment context does not expose `adapter`, `execute`, or `this`. Filter on `materialized=incremental` and `full_refresh=false` as a proxy.
+No extra setup is required for BigQuery beyond the query comment in step 3.
 
 3. To configure the query comments, add the following config to `dbt_project.yml`.
 
@@ -142,7 +140,7 @@ query-comment:
 
 ### Query tags
 
-> **Note:** The query tag extension options below (model config, profiles.yml, environment variables, extra kwarg) are Snowflake-only. On Databricks, the adapter already auto-appends rich per-query tags (`@@dbt_model_name`, `@@dbt_core_version`, `@@dbt_databricks_version`, `@@dbt_materialized`), and the metadata tag set by this package contains `app`, `dbt_query_tags_version`, `thread_id`, and `is_incremental`. On BigQuery there is no separate query-tag mechanism — `thread_id` is included in the query comment instead, but `is_incremental` is not available (see the BigQuery section above for the workaround).
+> **Note:** The query tag extension options below (model config, profiles.yml, environment variables, extra kwarg) are Snowflake-only. On Databricks, the adapter already auto-appends rich per-query tags (`@@dbt_model_name`, `@@dbt_core_version`, `@@dbt_databricks_version`, `@@dbt_materialized`), and the metadata tag set by this package contains `app`, `dbt_query_tags_version`, `thread_id`, and `is_incremental`. BigQuery has no separate query-tag mechanism.
 
 To extend the information added in the query tags, there are a few options:
 
