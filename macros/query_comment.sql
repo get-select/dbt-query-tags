@@ -14,10 +14,6 @@
         which=flags.WHICH,
     ) -%}
 
-    {%- if thread_id is defined and thread_id -%}
-        {%- do comment_dict.update(thread_id=thread_id) -%}
-    {%- endif -%}
-
     {%- if node is not none -%}
         {%- do comment_dict.update(
             node_name=node.name,
